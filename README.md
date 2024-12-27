@@ -7,8 +7,8 @@ QuizForge is a tool designed to transform YouTube video transcripts into study q
   * Multiple-choice questions (MCQs).
   * Short-answer questions.
 
-*User-Friendly Interface: Simple and intuitive design for ease of use.
-*Export Options (Planned): Save questions as PDF or other formats for offline study.
+* User-Friendly Interface: Simple and intuitive design for ease of use.
+* Export Options (Planned): Save questions as PDF or other formats for offline study.
 
 # Tech Stack
 * Frontend: HTML, CSS, JavaScript
