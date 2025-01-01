@@ -3,18 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuizForge - YouTube Study Tool</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <title>QuizForge</title>
+    <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body>
-    <h1>QuizForge</h1>
-    <form id="transcript-form">
-        <textarea name="transcript" placeholder="Paste YouTube transcript here..." rows="10" cols="50"></textarea>
-        <br>
-        <button type="submit">Generate Questions</button>
-    </form>
-    <div id="questions"></div>
-
-    <script src="/static/js/script.js"></script>
+    <div class="container">
+        <h1>QuizForge</h1>
+        <form id="transcript-form">
+            <textarea id="transcript" name="transcript" placeholder="Enter transcript here..."></textarea>
+            <button type="submit">Generate Questions</button>
+        </form>
+        <div id="questions-container">
+            <h2>Generated Questions:</h2>
+            <ul id="questions-list"></ul>
+        </div>
+    </div>
+    <script src="static/js/script.js"></script>
 </body>
 </html>

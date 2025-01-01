@@ -1,24 +1,38 @@
-document.getElementById("transcript-form").addEventListener("submit", async (e) => {
+document.getElementById("transcript-form").addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const form = e.target;
-    const formData = new FormData(form);
-    const response = await fetch("/generate", {
-        method: "POST",
-        body: formData,
-    });
+    const transcript = document.getElementById("transcript").value;
 
-    const result = await response.json();
-    const questionsDiv = document.getElementById("questions");
-    questionsDiv.innerHTML = "";
+    if (!transcript) {
+        alert("Please enter a transcript.");
+        return;
+    }
 
-    if (response.ok) {
-        result.questions.forEach((question, index) => {
-            const p = document.createElement("p");
-            p.textContent = `${index + 1}. ${question}`;
-            questionsDiv.appendChild(p);
+    try {
+        const response = await fetch("/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ transcript }),
         });
-    } else {
-        questionsDiv.textContent = result.error || "An error occurred.";
+
+        const data = await response.json();
+
+        if (data.error) {
+            alert("Error: " + data.error);
+            return;
+        }
+
+        const questionsList = document.getElementById("questions-list");
+        questionsList.innerHTML = ""; // Clear previous questions
+
+        data.questions.forEach((question) => {
+            const li = document.createElement("li");
+            li.textContent = question;
+            questionsList.appendChild(li);
+        });
+    } catch (err) {
+        alert("An error occurred: " + err.message);
     }
 });

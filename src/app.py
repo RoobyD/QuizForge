@@ -1,17 +1,12 @@
-from transformers import pipeline
 from flask import Flask, render_template, request, jsonify
+from transformers import pipeline
 
-
+# Initialize Flask app
 app = Flask(__name__)
 
-
-
-messages = [
-    {"role": "user", "content": "Who are you?"},
-]
-question_generator = pipeline("text-generation", model="meta-llama/Llama-3.3-70B-Instruct")
-question_generator(messages)
-
+# Load the pipeline with the 7B model
+model_name = "meta-llama/Llama-3.3-7B-Instruct"
+question_generator = pipeline("text-generation", model=model_name, device_map="auto")
 
 @app.route("/")
 def home():
@@ -24,14 +19,16 @@ def generate():
     if not transcript:
         return jsonify({"error": "No transcript provided"}), 400
 
-    # Generate questions using the Hugging Face model
+    # Generate questions from the transcript
     try:
-        questions = question_generator(transcript, max_length=64, num_return_sequences=5)
-        question_texts = [q['generated_text'] for q in questions]
+        # Use the pipeline to generate questions
+        messages = [{"role": "user", "content": transcript}]
+        generated_texts = question_generator(messages, max_length=150, num_return_sequences=5)
+        
+        questions = [f"Question {i+1}: {result['generated_text']}" for i, result in enumerate(generated_texts)]
+        return jsonify({"questions": questions})
     except Exception as e:
-        return jsonify({"error": f"Error generating questions: {str(e)}"}), 500
-
-    return jsonify({"questions": question_texts})
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
