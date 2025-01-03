@@ -20,7 +20,7 @@ def generate():
     try:
         # Generate questions using the Llama model pipeline
         prompt = f"Generate questions based on the following transcript: {transcript}"
-        generated_output = question_generator(prompt, max_length=300, num_return_sequences=3)
+        generated_output = question_generator(prompt, num_return_sequences=3, truncation=True, max_new_tokens=50)
 
         # Extract questions from the output
         questions = [output["generated_text"] for output in generated_output]
@@ -31,3 +31,4 @@ def generate():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
