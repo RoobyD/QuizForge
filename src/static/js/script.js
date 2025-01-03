@@ -21,11 +21,9 @@ document.getElementById("quizForm").addEventListener("submit", async (event) => 
 
         if (data.error) {
             questionsDiv.innerHTML = `<p>Error: ${data.error}</p>`;
-        } else if (data.questions && data.questions.length) {
+        } else {
             const questions = data.questions.map((q, i) => `<p><b>Question ${i + 1}:</b> ${q}</p>`).join("");
             questionsDiv.innerHTML = questions;
-        } else {
-            questionsDiv.innerHTML = "<p>No questions were generated. Please try again.</p>";
         }
     } catch (error) {
         questionsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
