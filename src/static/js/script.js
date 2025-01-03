@@ -1,38 +1,33 @@
-document.getElementById("transcript-form").addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const transcript = document.getElementById("transcript").value;
+document.getElementById("quizForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const transcript = document.getElementById("transcript").value.trim();
+    const questionsDiv = document.getElementById("questions");
 
     if (!transcript) {
-        alert("Please enter a transcript.");
+        questionsDiv.innerHTML = "<p>Please provide a transcript.</p>";
         return;
     }
+
+    questionsDiv.innerHTML = "<p>Generating questions...</p>";
 
     try {
         const response = await fetch("/generate", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ transcript }),
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `transcript=${encodeURIComponent(transcript)}`,
         });
 
         const data = await response.json();
 
         if (data.error) {
-            alert("Error: " + data.error);
-            return;
+            questionsDiv.innerHTML = `<p>Error: ${data.error}</p>`;
+        } else if (data.questions && data.questions.length) {
+            const questions = data.questions.map((q, i) => `<p><b>Question ${i + 1}:</b> ${q}</p>`).join("");
+            questionsDiv.innerHTML = questions;
+        } else {
+            questionsDiv.innerHTML = "<p>No questions were generated. Please try again.</p>";
         }
-
-        const questionsList = document.getElementById("questions-list");
-        questionsList.innerHTML = ""; // Clear previous questions
-
-        data.questions.forEach((question) => {
-            const li = document.createElement("li");
-            li.textContent = question;
-            questionsList.appendChild(li);
-        });
-    } catch (err) {
-        alert("An error occurred: " + err.message);
+    } catch (error) {
+        questionsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
     }
 });
